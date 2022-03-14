@@ -1,10 +1,10 @@
 # Exercise: Aggregating 2020 Political Contributions
 
-### Summary
+## Summary
 
 This exercise is the first of several that examine data from the US Federal Election Commission (FEC) on contributions by individuals to 2020 presidential campaigns.
 
-### Input Data
+## Input Data
 
 The input data is a large file called **contributions.zip** that will need to be downloaded from the course Google Drive folder. Be sure to leave it zipped because it's very large (about 850 MB) when unzipped.
 
@@ -14,15 +14,15 @@ Each record in **contributions.csv** contains the following fields: `'CMTE_ID'`,
 
 Because the main file is very large, and processing it can be slow, there is also a file on the course drive called **sample.zip**. It's a random sample of 1 percent of the records in the main file. You may want to use it when developing your script until you have things working smoothly. The first few lines are also provided in **firstlines.csv** if you'd like to see what the records look like. If you use the sample file be sure to remember to run your final script on **contributions.zip**.
 
-### Deliverables
+## Deliverables
 
 There are two deliverables for this assignment. The first is a script called **contrib_all.py** that reads the original data, builds a Pandas dataframe, and writes the dataframe out in pickled form. A pickled dataframe is not human-readable but it can be reloaded by Python much more quickly than rereading the CSV file. Pickling is a very useful way to pass large datasets between scripts without the extra overhead of converting them to and from human-readable form.
 
 The second deliverable is a script called **contrib_by_zip.py** that reads in the pickled file, aggregates the data, and writes out the results as a CSV file called `"contrib_by_zip.csv"`. As in several earlier exercises, `"contrib_by_zip.csv"` is not a deliverable: I'll reproduce it by running your scripts.
 
-### Instructions
+## Instructions
 
-**A. Script contrib_all.py**
+### A. Script contrib_all.py
 
 1. Import modules as needed.
 
@@ -72,7 +72,7 @@ The second deliverable is a script called **contrib_by_zip.py** that reads in th
 
 1. Unstack the data to create separate columns for the primary and general elections by setting variable `by_date_wide` equal to the result of calling `.unstack()` on `by_date_pgi` with the argument `"PGI"`.
 
-1. Begin a new figure by setting `fig, ax1` equal to the result of calling `plt.subplots()` with the argument `dpi=300`.
+1. Begin a new figure by setting `fig1, ax1` equal to the result of calling `plt.subplots()` with the argument `dpi=300`.
 
 1. Set the figure's title to `"Individual Contributions"`.
 
@@ -86,8 +86,7 @@ The second deliverable is a script called **contrib_by_zip.py** that reads in th
 
 1. Save the figure using the name `"by_month.png"`.
 
-
-**B. Script contrib_by_zip.py**
+### B. Script contrib_by_zip.py
 
 1. Import modules as needed.
 
@@ -105,44 +104,30 @@ The second deliverable is a script called **contrib_by_zip.py** that reads in th
 
 1. Create a variable called `zip_bad` that is equal to `~ zip_ok` (note the tilde). That will be equal to `True` for any records where the zip code isn't 5 or 9 characters.
 
-1. Create a variable called `zip5` that is equal to `zip_all` with the
-`.copy()` method applied.
+1. Create a variable called `zip5` that is equal to `zip_all` with the `.copy()` method applied.
 
 1. Set the values of `zip5` where the original zip code is 9 digits to the first five of them. Use `zip5[zip_9]` on the left side of an equals sign and `zip5[zip_9].str[:5]` on the right side. As before, the `.str` tells Pandas that you're applying a string operation to each string in the series. In this case the operation is `[:5]`, which selects the first five characters from the string.
 
 1. Set the values of `zip5[zip_bad]` to `None`, which will mark them as missing data.
 
-1. Create a variable called `zip5len` that is equal to the lengths of
-the zip codes in `zip5`. Then print the value counts using `dropna=False`
-and check that they are consistent with the earlier counts.
+1. Create a variable called `zip5len` that is equal to the lengths of the zip codes in `zip5`. Then print the value counts using `dropna=False` and check that they are consistent with the earlier counts.
 
 1. Create a new column in `contrib` called `'zip'` equal to `zip5`.
 
-1. Create a variable called `grouped` equal to `contrib` grouped by
-a list of the following columns: `'CMTE_ID'`, `'STATE'`, `'zip'`.
+1. Create a variable called `grouped` equal to `contrib` grouped by a list of the following columns: `'CMTE_ID'`, `'STATE'`, `'zip'`.
 
-1. Create a variable called `contrib_by_zip` equal to the `.sum()` method
-applied to the `'amt'` column of `grouped`.
+1. Create a variable called `contrib_by_zip` equal to the `.sum()` method applied to the `'amt'` column of `grouped`.
 
-1. Use the `.to_csv()` method to write `contrib_by_zip` to a file called
-`contrib_by_zip.csv`.
+1. Use the `.to_csv()` method to write `contrib_by_zip` to a file called `contrib_by_zip.csv`.
 
-**C. Cleaning up**
+### C. Cleaning up
 
-1. Once you're happy with `contrib_by_zip.csv` you should probably delete
-both `contributions.zip` and `contrib_all_pkl.zip`. That will save you
-about 230 MB of disk space and the files won't be needed for the other
-FEC assignments. Be sure to keep `contrib_by_zip.csv`, though: that one
-will be used.
+1. Once you're happy with `contrib_by_zip.csv` you should probably delete both `contributions.zip` and `contrib_all_pkl.zip`. That will save you about 230 MB of disk space and the files won't be needed for the other FEC assignments. Be sure to keep `contrib_by_zip.csv`, though: that one will be used.
 
-### Submitting
+## Submitting
 
-Once you're happy with everything and have committed all of the changes to
-your local repository, please push the changes to GitHub. At that point,
-you're done: you have submitted your answer.
+Once you're happy with everything and have committed all of the changes to your local repository, please push the changes to GitHub. At that point, you're done: you have submitted your answer.
 
-### Tips
+## Tips
 
-+ Don't be surprised by strange values in the state and zip code fields.
-The data is in the form it was reported to the FEC and there contributions
-from overseas as well as data entry errors.
++ Don't be surprised by strange values in the state and zip code fields. The data is in the form it was reported to the FEC and there contributions from overseas as well as data entry errors.

@@ -1,4 +1,9 @@
-#! /bin/python3
+""""
+demo.py
+Spring 2022 PJW
+
+Demo file illustrating important additional function of pandas.
+"""
 
 import pandas as pd
 
@@ -17,7 +22,7 @@ sample = pd.read_csv('sample.zip',dtype=str)
 #  Rename a variable
 #
 
-sample = sample.rename( {'TRANSACTION_PGI':'PGI'}, axis='columns')
+sample = sample.rename( columns={'TRANSACTION_PGI':'PGI'} )
 
 #
 #  Convert a variable to numeric form
@@ -118,4 +123,3 @@ subset_view['NAME'] = fixname
 fixname = subset_copy['NAME'].str.title()
 
 subset_copy['NAME'] = fixname
-
