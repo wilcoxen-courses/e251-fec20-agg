@@ -12,51 +12,53 @@ import pandas as pd
 pd.set_option('display.max_columns',None)
 
 #
-#  Read the data
+#  Read the data and list a few rows
 #
 
 sample = pd.read_csv('sample.zip',dtype=str)
 
+print( '\nFirst rows:\n')
+print( sample.head() )
+
 #%%
 #
-#  Rename a variable
+#  Adjusting a name and the data type of one column
 #
 
 sample = sample.rename( columns={'TRANSACTION_PGI':'PGI'} )
-
-#
-#  Convert a variable to numeric form
-#
-
 sample['dollars'] = sample['TRANSACTION_AMT'].astype(float)
 
+#%%
 #
-#  Convert a string to a Pandas datetime object
+#  Convert a string to a Pandas datetime object and get the year
 #
 
 ymd = pd.to_datetime( sample['TRANSACTION_DT'], format="%m%d%Y")
-print( ymd )
 
-#  Now pull the year out of the datetime and put it in the dataframe
-
+sample['ymd'] = ymd
 sample['year'] = ymd.dt.year
 
 #
 #  What have we got now?
 #
 
-print( sample )
+print( sample[['TRANSACTION_DT','ymd','year']] )
 
 #%%
 #
 #  Pickling the dataframe
 #
 
+sample.info()
 sample.to_pickle('sample_pkl.zip')
 
+#%%
+#
 #  Reload it under another name as a demonstration
+#
 
 sample2 = pd.read_pickle('sample_pkl.zip')
+sample2.info()
 
 #%%
 #
@@ -73,10 +75,8 @@ print( subset_rows )
 
 #%%
 #
-#  Using .unstack()
+#  Do some filtering and aggregation to set up next example
 #
-
-#  First, do some filtering and aggregation
 
 trim = sample.query("PGI=='P2020' or PGI=='G2020'")
 trim = trim.query("year >= 2019")
@@ -84,20 +84,29 @@ trim = trim.query("year >= 2019")
 grouped = trim.groupby(['PGI','year'])
 tot_amt = grouped['dollars'].sum()
 
+print( '\nContributions by PGI and year:\n' )
 print( tot_amt )
 
+#%%
+#
 #  Unstacking PGI
+#
 
 tot_wide = tot_amt.unstack('PGI')
 tot_wide['total'] = tot_wide['P2020'] + tot_wide['G2020']
 
+print('\nWide version by PGI, with total contributions:\n')
 print( tot_wide )
 
+#%%
+#
 #  Unstacking year
+#
 
 tot_wide = tot_amt.unstack('year')
 tot_wide['total'] = tot_wide[2019] + tot_wide[2020]
 
+print('\nWide version by year, with total contributions:\n')
 print( tot_wide )
 
 #%%
@@ -110,7 +119,10 @@ keepvars = ['NAME', 'dollars']
 subset_view = sample[ keepvars ]
 subset_copy = sample[ keepvars ].copy()
 
+#%%
+#
 #  Now suppose want to tidy up names on subsets.
+#
 
 #     Approach 1: changing data in a view generates a warning
 
@@ -118,7 +130,10 @@ fixname = subset_view['NAME'].str.title()
 
 subset_view['NAME'] = fixname
 
+#%%
+#
 #     Approach 2: preferred approach is to make a copy first
+#
 
 fixname = subset_copy['NAME'].str.title()
 
