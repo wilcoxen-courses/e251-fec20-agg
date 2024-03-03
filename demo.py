@@ -124,7 +124,9 @@ subset_copy = sample[ keepvars ].copy()
 #  Now suppose want to tidy up names on subsets.
 #
 
-#     Approach 1: changing data in a view generates a warning
+#     Approach 1: Changing data in a view generates a warning
+
+print('\nExpect one SettingWithCopy warning:\n')
 
 fixname = subset_view['NAME'].str.title()
 
@@ -132,9 +134,22 @@ subset_view['NAME'] = fixname
 
 #%%
 #
-#     Approach 2: preferred approach is to make a copy first
+#     Approach 2: No warning if we make a copy first
 #
 
 fixname = subset_copy['NAME'].str.title()
 
 subset_copy['NAME'] = fixname
+
+#%%
+#
+#     Approach 3: Preferred approach using copy_on_write mode. This will
+#                 be the default in pandas 3. A copy operation will occur
+#                 automatically when needed.
+#
+
+pd.options.mode.copy_on_write = True
+
+fixname = subset_view['NAME'].str.title()
+
+subset_view['NAME'] = fixname
